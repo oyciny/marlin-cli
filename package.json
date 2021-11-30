@@ -1,8 +1,8 @@
 {
   "name": "marlin-cli",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "A cli tool for generating marlin firmware for your 3D printer.",
-  "main": "src/index.js",
+  "main": "./src/index.js",
   "scripts": {
     "postinstall": "python3 ./bundle/platformio.py --help"
   },
