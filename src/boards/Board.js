@@ -25,30 +25,32 @@ class Board {
     }
 
     copy_bundle(_callback) {
-        try {
-            fs.copySync(this.bundle, `${root_dir}/tmp/Marlin`)
-        } catch (err) {
-            console.log(err)
-            process.exit(-1)
-        }
-        _callback()
+        return new Promise((resolve, reject) => {
+            fs.copy(this.bundle, `${root_dir}/tmp/Marlin`)
+                .then(resolve())
+                .catch(reject())
+        })
     }
 
     copy_marlin(_callback) {
-        try {
-            fs.copySync(`${root_dir}/bundle/Marlin`, `${root_dir}/tmp`)
-        } catch (err) {
-            console.log(err)
-            process.exit(-1)
-        }
-        _callback()
+        return new Promise((resolve, reject) => {
+            fs.copy(`${root_dir}/bundle/Marlin`, `${root_dir}/tmp`)
+                .then(resolve())
+                .catch(reject())
+        })
     }
 
     package(_callback) {
-        this.copy_marlin(() => {
-            this.copy_bundle(() => {
+        this.copy_marlin().then(() => {
+            this.copy_bundle().then(() => {
                 _callback()
+            }).catch(err => {
+                console.log(err)
+                process.exit(-1)
             })
+        }).catch(err => {
+            console.log(err)
+            process.exit(-1)
         })
     }
 
