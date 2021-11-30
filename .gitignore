@@ -118,7 +118,7 @@ dist
 .pnp.*
 
 # Temp Folder
-temp
+./temp
 
 # DS Store
 .DS_Store
