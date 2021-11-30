@@ -6,6 +6,7 @@
   "scripts": {
     "postinstall": "python3 ./bundle/platformio.py --help"
   },
+  "homepage": "https://github.com/oyciny/marlin-cli",
   "keywords": [
     "3d",
     "printer",
@@ -18,7 +19,7 @@
     "util",
     "utility"
   ],
-  "author": "Coby McKinney",
+  "author": "Coby McKinney <coby@voxlyte.com> (https://github.com/oyciny)",
   "license": "ISC",
   "dependencies": {
     "commander": "^8.3.0",
