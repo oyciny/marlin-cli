@@ -28,8 +28,9 @@ class Ender_3_Pro {
     }
 
     set_board(callback) {
+        console.clear()
         inquirer.prompt([
-            { type: 'list', name: 'board', choices: ['BigTreeTech SKR Mini E3 1.2', 'BigTreeTech SKR Mini E3 2.0', 'Creality v4.2.2', 'Creality v4.2.7']}
+            { type: 'list', name: 'board', choices: [/*'BigTreeTech SKR Mini E3 1.2', */'BigTreeTech SKR Mini E3 2.0'/*, 'Creality v4.2.2', 'Creality v4.2.7'*/]}
         ]).then(a => {
             this.board = a.board
         }).then(callback)
@@ -43,7 +44,10 @@ class Ender_3_Pro {
         if (this.board === 'BigTreeTech SKR Mini E3 2.0') {
             // Configure for SKR Mini E3 2.0
             let board = new btt_skr_mini_e3_v2({ type: this.type, bundle: `${root_dir}/bundle/Ender-3 Pro/BigTreeTech SKR Mini E3 2.0/`, options: { name: this.name, buildplate: this.buildplate, z_homing: this.z_homing }})
-            board.configure()
+            board.configure().then(() => {
+                console.clear()
+                console.log('Firmware is ready to be built')
+            })
         }
         if (this.board === 'Creality v4.2.2') {
             // Configure for Creality v4.2.2

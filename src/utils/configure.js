@@ -11,6 +11,7 @@ const questions = [
 ]
 
 const configure = () => {
+    console.clear()
     inquirer.prompt(questions).then(a => {
         conf.device_type = a.device
         conf.custom_name = a.custom_name
@@ -43,6 +44,7 @@ const configure = () => {
 }
 
 const custom_naming = (callback) => {
+    console.clear()
     inquirer.prompt([
         { type: 'input', name: 'custom_name', message: 'Device Custom Name: ' }
     ]).then(a => {
@@ -51,6 +53,7 @@ const custom_naming = (callback) => {
 }
 
 const probing_setup = (callback) => {
+    console.clear()
     inquirer.prompt([
         { type: 'number', name: 'probe_offset_x', message: 'Probe X axis offset: ' },
         { type: 'number', name: 'probe_offset_y', message: 'Probe Y axis offset: ' }

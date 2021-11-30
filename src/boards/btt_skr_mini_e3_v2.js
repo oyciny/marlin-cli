@@ -6,118 +6,90 @@
 
 const fs = require('fs')
 const path = require('path')
-const replace = require('../utils/replace')
 const Board = require('./Board')
 
 // Set Environment
 const root_dir = path.join(__dirname, '../../')
-const bundle_dir = path.join(__dirname, `${root_dir}/bundle`)
 
 class BTT_SKR_MINI_E3_V2 extends Board {
 
+    async modifyConfig() {
+        let file = fs.readFileSync(`${root_dir}tmp/Marlin/Configuration.h`, { encoding: 'utf-8' })
+        // Define Changes to be made
+        let changes = [
+            { from: /#define CUSTOM_MACHINE_NAME "Ender-3 Pro"/g, to: `#define CUSTOM_MACHINE_NAME "${this.DEVICE_NAME}"` },    // Custom Device Name
+            { from: /#define X_BED_SIZE 235/g, to: `#define X_BED_SIZE ${this.BUILDPLATE_X_AXIS}` },                            // Buildplate X Size
+            { from: /#define Y_BED_SIZE 235/g, to: `#define Y_BED_SIZE ${this.BUILDPLATE_Y_AXIS}` },                            // Buildplate Y Size
+            { from: /\/\/#define PREHEAT_BEFORE_LEVELING/g, to: '#define PREHEAT_BEFORE_LEVELING' }                             // Preheat Before Leveling
+        ]
+        if (typeof this.Z_PROBE_TYPE !== 'undefined' && this.Z_PROBE_TYPE) {
+            changes.push({ from: /\/\/#define USE_PROBE_FOR_Z_HOMING/g, to: '#define USE_PROBE_FOR_Z_HOMING' })
+            changes.push({ from: /\/\/#define BLTOUCH/g, to: `#define BLTOUCH` })
+            changes.push({ from: /#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }/g, to: `#define NOZZLE_TO_PROBE_OFFSET { ${this.Z_PROBE_X_OFFSET}, ${this.Z_PROBE_Y_OFFSET}, 0 }` })
+            changes.push({ from: /\/\/#define AUTO_BED_LEVELING_BILINEAR/g, to: '#define AUTO_BED_LEVELING_BILINEAR' }),
+            changes.push({ from: /#define MESH_BED_LEVELING/g, to: '//#define MESH_BED_LEVELING' })
+            changes.push({ from: /\/\/#define Z_SAFE_HOMING/g, to: '#define Z_SAFE_HOMING'})
+        }
+
+        for await (const change of changes) {
+            file = file.replace(change.from, change.to)
+        }
+
+        fs.writeFileSync(`${root_dir}tmp/Marlin/Configuration.h`, file, { encoding: 'utf-8' })
+
+    }
+
+    async modifyAdv() {
+        let file = fs.readFileSync(`${root_dir}tmp/Marlin/Configuration_adv.h`, { encoding: 'utf-8' })       // Read File
+        let changes = [
+            { from: /\/\/#define SOUND_MENU_ITEM/g, to: '#define SOUND_MENU_ITEM' },            // Add Mute Selection to Menu
+            { from: /\/\/#define SHOW_REMAINING_TIME/g, to: '#define SHOW_REMAINING_TIME' },    // Show Estimated Time Remaining on Print
+            { from: /\/\/#define STATUS_HEAT_PERCENT/g, to: '#define STATUS_HEAT_PERCENT' },    // Status Bar Shown when Heating
+        ]
+        if (typeof this.Z_PROBE_TYPE !== 'undefined' && this.Z_PROBE_TYPE) {
+            changes.push({ from: /\/\/#define PROBE_OFFSET_WIZARD/g, to: '#define PROBE_OFFSET_WIZARD' })                               // Offset Wizard
+            changes.push({ from: /\/\/#define PROBE_OFFSET_WIZARD_START_Z -4.0/g, to: '#define PROBE_OFFSET_WIZARD_START_Z -4.0' })     // Offset Wizard Start Offset
+        }
+
+        for await (const change of changes) {
+            file = file.replace(change.from, change.to)
+        }
+
+        fs.writeFileSync(`${root_dir}tmp/Marlin/Configuration_adv.h`, file, { encoding: 'utf-8' })      // Write File
+
+    }
+
+    async modifyPlatformIO() {
+        let file = fs.readFileSync(`${root_dir}tmp/platformio.ini`, { encoding: 'utf-8' })      // Read File
+
+        let changes = [
+            { from: /default_envs = mega2560/g, to: 'default_envs = STM32F103RC_btt_maple' }
+        ]
+
+        for await (const change of changes) {
+            file = file.replace(change.from, change.to)
+        }
+
+        fs.writeFileSync(`${root_dir}tmp/platformio.ini`, file, { encoding: 'utf-8' })
+
+    }
+
     configure() {
         // Package Files Required for board
-        this.package()
-            .then(() => {
-                // Available Configurable Parameters
-                //
-                // DEVICE_NAME
-                //
-                // BUILDPLATE_X_AXIS
-                // BUILDPLATE_Y_AXIS
-                //
-                // Z_PROBE_TYPE
-                // Z_PROBE_X_OFFSET
-                // Z_PROBE_Y_OFFSET
-
-                // Paths to Files
-                const CONFIG_FILE = `${root_dir}tmp/Marlin/Configuration.h`
-                const CONFIG_ADV_FILE = `${root_dir}tmp/Marlin/Configuration_adv.h`
-                const PLATFORMIO = `${root_dir}tmp/platformio.ini`
-
-                // Define Changes to be made
-                const LINE_CHANGES = []
-                
-                // Machine Name
-                LINE_CHANGES.push({ from: /#define CUSTOM_MACHINE_NAME "Ender-3 Pro"/g, to: `#define CUSTOM_MACHINE_NAME "${this.DEVICE_NAME}"`})
-                // Bed size
-                LINE_CHANGES.push({ from: /#define X_BED_SIZE 235/g, to: `#define X_BED_SIZE ${this.BUILDPLATE_X_AXIS}` })
-                LINE_CHANGES.push({ from: /#define Y_BED_SIZE 235/g, to: `#define Y_BED_SIZE ${this.BUILDPLATE_Y_AXIS}` })
-                // Z Axis Probe
-                if (typeof this.Z_PROBE_TYPE !== 'undefined' && this.Z_PROBE_TYPE) {
-                    LINE_CHANGES.push({ from: /\/\/#define USE_PROBE_FOR_Z_HOMING/g, to: '#define USE_PROBE_FOR_Z_HOMING' })
-                    LINE_CHANGES.push({ from: /\/\/#define BLTOUCH/g, to: `#define BLTOUCH` })
-                    LINE_CHANGES.push({ from: /#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }/g, to: `#define NOZZLE_TO_PROBE_OFFSET { ${this.Z_PROBE_X_OFFSET}, ${this.Z_PROBE_Y_OFFSET}, 0 }` })
-                    LINE_CHANGES.push({ from: /#define Z_MIN_PROBE_ENDSTOP_INVERTING false/g, to: '#define Z_MIN_PROBE_ENDSTOP_INVERTING true' })
-                }
-                // Bed Leveling
-                LINE_CHANGES.push({ from: /\/\/#define AUTO_BED_LEVELING_BILINEAR/g, to: '#define AUTO_BED_LEVELING_BILINEAR' })
-                LINE_CHANGES.push({ from: /\/\/#define MESH_BED_LEVELING/g, to: '//#define MESH_BED_LEVELING' })
-                // Prehead Before Leveling
-                LINE_CHANGES.push({ from: /\/\/#define PREHEAT_BEFORE_LEVELING/g, to: '#define PREHEAT_BEFORE_LEVELING' })
-
-                LINE_CHANGES.map(LINE_CHANGE => {
-                    replace({
-                        files: CONFIG_FILE,
-                        from: LINE_CHANGE.from,
-                        to: LINE_CHANGE.to
-                    })
+        return new Promise((resolve, reject) => {
+            this.package()
+                .then(() => {
+                    this.modifyConfig()
                 })
-
-                //
-                // Advanced Configuration
-                //
-
-                // Enable Offset Wizard
-                replace({
-                    files: CONFIG_ADV_FILE,
-                    from: /\/\/#define PROBE_OFFSET_WIZARD/g,
-                    to: '#define PROBE_OFFSET_WIZARD'
+                .then(() => {
+                    this.modifyAdv()
                 })
-                replace({
-                    files: CONFIG_ADV_FILE,
-                    from: /\/\/#define PROBE_OFFSET_WIZARD_START_Z -4.0/g,
-                    to: '#define PROBE_OFFSET_WIZARD_START_Z -4.0'
-                }, () => {
-                    console.log('Z Offset Wizard Enabled')
+                .then(() => {
+                    this.modifyPlatformIO()
                 })
-
-                // Enable Mute Option
-                replace({
-                    files: CONFIG_ADV_FILE,
-                    from: /\/\/#define SOUND_MENU_ITEM/g,
-                    to: '#define SOUND_MENU_ITEM'
-                }, () => {
-                    console.log('Sound Mute Option Enabled')
-                })
-
-                // Enable Print Time Remaining Option
-                replace({
-                    files: CONFIG_ADV_FILE,
-                    from: /\/\/#define SHOW_REMAINING_TIME/g,
-                    to: '#define SHOW_REMAINING_TIME'
-                }, () => {
-                    console.log('Show Remaining Print Time Enabled')
-                })
-
-                // Enable Heating Status Bar
-                replace({
-                    files: CONFIG_ADV_FILE,
-                    from: /\/\/#define STATUS_HEAT_PERCENT/g,
-                    to: '#define STATUS_HEAT_PERCENT'
-                })
-
-                //
-                // PlatformIO Config
-                //
-                replace({
-                    files: PLATFORMIO,
-                    from: /default_envs = mega2560/g,
-                    to: 'default_envs = STM32F103RC_btt_maple'
-                }, () => {
-                    console.log('PlatformIO has been configured. you may now proceed to build the firmware.')
-                })
-            })
+                .then(resolve)
+                .catch(reject)
+        })
     }
 
 }

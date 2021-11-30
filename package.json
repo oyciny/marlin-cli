@@ -4,7 +4,7 @@
   "description": "A cli tool for generating marlin firmware for your 3D printer.",
   "main": "src/index.js",
   "scripts": {
-    "bundle": ""
+    "postinstall": "python3 ./bundle/platformio.py --help"
   },
   "keywords": [
     "3d",

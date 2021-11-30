@@ -23,7 +23,7 @@ program
     .command('build')
     .description('Build your firmware to flash to the machine')
     .action(() => {
-        
+        utils.build()
     })
 
 program.parse()

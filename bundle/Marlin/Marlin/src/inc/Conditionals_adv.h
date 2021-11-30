@@ -550,6 +550,20 @@
   #endif
 #endif
 
+// Probe Temperature Compensation
+#if !TEMP_SENSOR_PROBE
+  #undef PTC_PROBE
+#endif
+#if !TEMP_SENSOR_BED
+  #undef PTC_BED
+#endif
+#if !HAS_EXTRUDERS
+  #undef PTC_HOTEND
+#endif
+#if ANY(PTC_PROBE, PTC_BED, PTC_HOTEND)
+  #define HAS_PTC 1
+#endif
+
 // Let SD_FINISHED_RELEASECOMMAND stand in for SD_FINISHED_STEPPERRELEASE
 #if ENABLED(SD_FINISHED_STEPPERRELEASE)
   #ifndef SD_FINISHED_RELEASECOMMAND
@@ -622,7 +636,9 @@
 #endif
 
 // Fallback Stepper Driver types that depend on Configuration_adv.h
-#if NONE(DUAL_X_CARRIAGE, X_DUAL_STEPPER_DRIVERS)
+#if EITHER(DUAL_X_CARRIAGE, X_DUAL_STEPPER_DRIVERS)
+  #define HAS_X2_STEPPER 1
+#else
   #undef X2_DRIVER_TYPE
 #endif
 #if DISABLED(Y_DUAL_STEPPER_DRIVERS)
@@ -698,6 +714,9 @@
   #endif
   #ifndef ACTION_ON_KILL
     #define ACTION_ON_KILL    "poweroff"
+  #endif
+  #ifndef SHUTDOWN_ACTION
+    #define SHUTDOWN_ACTION   "shutdown"
   #endif
   #if HAS_FILAMENT_SENSOR
     #ifndef ACTION_ON_FILAMENT_RUNOUT

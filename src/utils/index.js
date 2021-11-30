@@ -1,4 +1,5 @@
 module.exports = {
     clone: require('./clone_repo'),
-    configure: require('./configure')
+    configure: require('./configure'),
+    build: require('./build')
 }
