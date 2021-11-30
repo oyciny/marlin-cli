@@ -120,5 +120,11 @@ dist
 # Temp Folder
 ./tmp
 
+# Dist
+./dist
+
+# PIO
+./pio
+
 # DS Store
 .DS_Store
