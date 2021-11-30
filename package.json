@@ -1,10 +1,10 @@
 {
   "name": "marlin-cli",
-  "version": "0.1.1",
+  "version": "0.1.5",
   "description": "A cli tool for generating marlin firmware for your 3D printer.",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "bundle": ""
   },
   "keywords": [
     "3d",
@@ -22,6 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "commander": "^8.3.0",
+    "fs-extra": "^10.0.0",
     "inquirer": "^8.2.0",
     "replace-in-file": "^6.3.2"
   },

@@ -1,22 +1,29 @@
-const { program, Option, Argument } = require('commander')
-const inquirer = require('inquirer')
+#! /usr/bin/env node
+const { program } = require('commander')
 const version = require('../package.json').version
 const utils = require('./utils')
 
 program.version(version)
 
 program
-    .command('configure')
+    .command('update')
+    .description('Updates the Marlin Configs and Firmware')
     .action(() => {
-        inquirer.prompt([
-            { type: 'confirm', message: 'Would you like to update to the latest version of the marlin firmware?\n', name: 'conf'}
-        ]).then(a => {
-            if (a.conf) {
-                utils.clone()
-            } else {
-                utils.configure()
-            }
-        })
+        utils.clone()
+    })
+
+program
+    .command('configure')
+    .description('Configure your own Marlin Firmware')
+    .action(() => {
+        utils.configure()
+    })
+
+program
+    .command('build')
+    .description('Build your firmware to flash to the machine')
+    .action(() => {
+        
     })
 
 program.parse()
