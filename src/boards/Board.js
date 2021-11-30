@@ -27,30 +27,27 @@ class Board {
     copy_bundle(_callback) {
         return new Promise((resolve, reject) => {
             fs.copy(this.bundle, `${root_dir}/tmp/Marlin`)
-                .then(resolve())
-                .catch(reject())
+                .then(resolve)
+                .catch(reject)
         })
     }
 
     copy_marlin(_callback) {
         return new Promise((resolve, reject) => {
             fs.copy(`${root_dir}/bundle/Marlin`, `${root_dir}/tmp`)
-                .then(resolve())
-                .catch(reject())
+                .then(resolve)
+                .catch(reject)
         })
     }
 
-    package(_callback) {
-        this.copy_marlin().then(() => {
-            this.copy_bundle().then(() => {
-                _callback()
-            }).catch(err => {
-                console.log(err)
-                process.exit(-1)
-            })
-        }).catch(err => {
-            console.log(err)
-            process.exit(-1)
+    package() {
+        return new Promise((resolve, reject) => {
+            this.copy_marlin()
+                .then(() => {
+                    this.copy_bundle()
+                        .then(resolve)
+                        .catch(reject)
+                }).catch(reject)
         })
     }
 
