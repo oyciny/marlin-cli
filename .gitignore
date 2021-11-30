@@ -118,13 +118,10 @@ dist
 .pnp.*
 
 # Temp Folder
-./tmp
-
-# Dist
-./dist
+tmp/
 
 # PIO
-./pio
+pio/
 
 # DS Store
-.DS_Store
+.DS_Store/
