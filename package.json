@@ -19,7 +19,7 @@
     "utility"
   ],
   "author": "Coby McKinney",
-  "license": "MIT",
+  "license": "ISC",
   "dependencies": {
     "commander": "^8.3.0",
     "fs-extra": "^10.0.0",
