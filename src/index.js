@@ -1,15 +1,39 @@
 #! /usr/bin/env node
 const { program } = require('commander')
-const version = require('../package.json').version
+const pkg = require('../package.json')
 const utils = require('./utils')
+const path = require('path')
+const updateNotifier = require('update-notifier')
 
-program.version(version)
+const marlin_uri = 'https://codeload.github.com/MarlinFirmware/Marlin/zip/bugfix-2.0.x'
+global.root_dir = path.join(__dirname, '../')
+
+program.version(pkg.version)
+
+updateNotifier({pkg}).fetchInfo()
 
 program
     .command('update')
     .description('Updates the Marlin Configs and Firmware')
     .action(() => {
-        utils.clone()
+        console.clear()
+        utils.collect.marlin(marlin_uri)
+            .catch(e => {
+                console.log(e)
+            })
+    })
+
+program
+    .command('platformio')
+    .action(() => {
+        console.clear()
+        utils.collect.platformio()
+            .then(() => {
+
+            })
+            .catch(e => {
+                console.log(e)
+            })
     })
 
 program

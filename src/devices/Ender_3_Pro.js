@@ -1,8 +1,5 @@
 const inquirer = require('inquirer')
 const { btt_skr_mini_e3_v2 } = require('../boards')
-const path = require('path')
-
-const root_dir = path.join(__dirname, '../../')
 
 class Ender_3_Pro {
 
@@ -37,6 +34,14 @@ class Ender_3_Pro {
     }
 
     write_files(callback) {
+        if (this.board === 'BigTreeTech SKR Mini E3 2.0') {
+            let board = new btt_skr_mini_e3_v2({
+                type: this.type,
+                buildplate: this.buildplate
+            }, { test: 'test' })
+            board.collect_bundle(board.bundle)
+        }
+        /*
         if (this.board === 'BigTreeTech SKR Mini E3 1.2') {
             // Configure for SKR Mini E3 1.2
 
@@ -57,6 +62,7 @@ class Ender_3_Pro {
             // Configure for Creality v4.2.7
 
         }
+        */
 
         callback()
     }

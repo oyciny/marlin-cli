@@ -1,3 +1,42 @@
+const fs = require('fs')
+const os = require('os')
+const { execSync } = require('child_process')
+const https = require('https')
+const zlib = require('zlib')
+
+const marlin_uri = 'https://codeload.github.com/MarlinFirmware/Marlin/zip/bugfix-2.0.x'
+
+class Board {
+
+    constructor(conf) {
+        this.type = conf.type
+        if (conf.name) {
+            this.name = conf.name
+        }
+        if (conf.z_probe) {
+            this.z_probe = {
+                type: conf.z_probe.type,
+                offset: {
+                    x: conf.z_probe.offset.x,
+                    y: conf.z_probe.offset.y
+                }
+            }
+        }
+        this.buildplate = {
+            x: conf.buildplate.x,
+            y: conf.buildplate.y
+        }
+    }
+
+    collect_bundle(bundle) {
+        console.log(bundle)
+    }
+
+}
+
+module.exports = Board
+
+/*
 const fs = require('fs-extra')
 const path = require('path')
 
@@ -54,3 +93,4 @@ class Board {
 }
 
 module.exports = Board
+*/

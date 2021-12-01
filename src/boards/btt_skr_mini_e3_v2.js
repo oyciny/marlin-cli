@@ -3,7 +3,20 @@
 // This file manages the writing of configuration files specifically for the board listed above.
 // If any changes come out that change how this specific board must be configured only this file
 // will need to be edited. The rest of the program should still work.
+const Board = require('./Board')
 
+class BTT_SKR_MINI_E3_V2 extends Board {
+    
+    constructor(conf, bundle) {
+        super(conf)
+        this.bundle = bundle
+    }
+    
+}
+
+module.exports = BTT_SKR_MINI_E3_V2
+
+/*
 const fs = require('fs')
 const path = require('path')
 const Board = require('./Board')
@@ -95,3 +108,4 @@ class BTT_SKR_MINI_E3_V2 extends Board {
 }
 
 module.exports = BTT_SKR_MINI_E3_V2
+*/

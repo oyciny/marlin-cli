@@ -8,6 +8,7 @@ const fs = require('fs')
 const root_dir = path.join(__dirname, './')
 
 bundle_uri = 'https://github.com/oyciny/marlin-cli-bundle.git'
+platformio_uri = 'https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py'
 
 console.clear()
 if (fs.existsSync('./bundle')) {
