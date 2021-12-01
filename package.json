@@ -3,6 +3,7 @@
   "version": "0.2.1",
   "description": "A cli tool for generating marlin firmware for your 3D printer.",
   "main": "./src/index.js",
+  "preferGlobal": true,
   "scripts": {
     "postinstall": "node ./bundle.js"
   },
@@ -22,10 +23,12 @@
   "author": "Coby McKinney <coby@voxlyte.com> (https://github.com/oyciny)",
   "license": "ISC",
   "dependencies": {
+    "cli-progress": "^3.9.1",
     "commander": "^8.3.0",
     "fs-extra": "^10.0.0",
     "inquirer": "^8.2.0",
-    "replace-in-file": "^6.3.2"
+    "unzipper": "^0.10.11",
+    "update-notifier": "^5.1.0"
   },
   "bin": {
     "marlin": "./src/index.js"
