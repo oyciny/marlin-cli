@@ -123,5 +123,8 @@ tmp/
 # PIO
 pio/
 
+# Bundle
+bundle/
+
 # DS Store
 .DS_Store
